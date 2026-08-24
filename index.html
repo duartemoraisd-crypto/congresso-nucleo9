@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Congresso Núcleo 9 — 2026</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+  <style>
+    :root {
+      --gold: #d4a017;
+      --gold-light: #f0c94a;
+      --dark-red: #4a0a0a;
+      --darker-red: #2d0505;
+      --glass-bg: rgba(255,255,255,0.06);
+      --glass-border: rgba(255,255,255,0.15);
+      --glass-blur: 20px;
+      --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: var(--font-main);
+      background: var(--dark-red);
+      color: white;
+      overflow-x: hidden;
+    }
+    .bg-grid {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image: 
+        linear-gradient(rgba(212,160,23,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212,160,23,0.08) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+    .header {
+      position: fixed;
+      top: 16px; left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 48px); max-width: 1100px;
+      height: 64px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s var(--ease-cinematic), box-shadow 0.4s ease;
+    }
+    .header.visible { opacity: 1; pointer-events: auto; }
+    .header-text-left, .header-text-right {
+      font-size: 13px; font-weight: 500; letter-spacing: 3px;
+      color: rgba(255,255,255,0.9); text-transform: uppercase;
+      opacity: 0; transform: translateY(10px);
+      transition: all 0.5s var(--ease-cinematic);
+    }
+    .header.visible .header-text-left,
+    .header.visible .header-text-right { opacity: 1; transform: translateY(0); }
+    .header.visible .header-text-left { transition-delay: 0.15s; }
+    .header.visible .header-text-right { transition-delay: 0.25s; }
+    .header-logo-img {
+      height: 130px; width: auto;
+      opacity: 0; transform: scale(0.8);
+      transition: all 0.5s var(--ease-cinematic) 0.1s;
+    }
+    .header.visible .header-logo-img { opacity: 1; transform: scale(1); }
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 2;
+    }
+    .hero-logo {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 50;
+      will-change: transform, opacity;
+    }
+    .hero-logo img {
+      width: clamp(200px, 45vw, 480px);
+      height: auto;
+      filter: drop-shadow(0 8px 32px rgba(0,0,0,0.5));
+      display: block;
+    }
+    .shirt-section {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      position: relative; z-index: 2;
+      padding: 100px 20px 60px;
+    }
+    .bg-text {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(40px, 12vw, 140px); font-weight: 900;
+      color: transparent; -webkit-text-stroke: 2px rgba(212,160,23,0.25);
+      text-transform: uppercase; letter-spacing: 4px;
+      white-space: nowrap; pointer-events: none; z-index: 1;
+      text-align: center; line-height: 1.1;
+    }
+    .shirt-container {
+      position: relative; z-index: 3;
+      width: 100%; max-width: 520px;
+      height: 580px;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 20px;
+    }
+    model-viewer {
+      width: 100%; height: 100%;
+      --poster-color: transparent;
+      --progress-bar-color: var(--gold);
+      --progress-bar-height: 3px;
+    }
+    .shirt-hint {
+      margin-top: 16px; color: rgba(255,255,255,0.5);
+      font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    }
+    .arrow-deco {
+      position: absolute; color: var(--gold); font-size: 48px;
+      opacity: 0.7; pointer-events: none; z-index: 2;
+    }
+    .arrow-left { left: 5%; top: 55%; transform: rotate(-30deg); }
+    .arrow-right { right: 5%; top: 30%; transform: rotate(150deg); }
+    .cta-text {
+      font-size: clamp(32px, 6vw, 72px); font-weight: 900;
+      color: var(--gold-light); text-transform: uppercase;
+      text-align: center; letter-spacing: 3px; margin: 30px 0 10px;
+      text-shadow: 0 4px 20px rgba(212,160,23,0.3);
+      position: relative; z-index: 3;
+    }
+
+    /* ============================================
+       FORM SECTION — RESPONSIVO E MAIOR
+       ============================================ */
+    .form-section {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 80px 20px; position: relative; z-index: 2;
+    }
+    .form-card {
+      width: 100%;
+      max-width: 720px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+      border: 1px solid var(--glass-border); border-radius: 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+      padding: 52px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+    .form-card::before {
+      content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08) 0%, transparent 50%);
+      pointer-events:none;
+    }
+    .form-title {
+      font-size: clamp(28px, 5vw, 52px); font-weight: 900;
+      color: var(--gold-light); text-transform: uppercase;
+      text-align: center; margin-bottom: 40px; letter-spacing: 3px;
+      text-shadow: 0 4px 16px rgba(212,160,23,0.2);
+    }
+    .form-group { margin-bottom: 24px; position: relative; z-index: 1; }
+    .form-label {
+      display: block; font-size: 15px; font-weight: 700;
+      color: white; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;
+    }
+    .form-input {
+      width: 100%; padding: 16px 20px;
+      background: rgba(139,69,19,0.35);
+      border: 1px solid rgba(212,160,23,0.25); border-radius: 16px;
+      color: white; font-size: 16px; outline: none; transition: all 0.3s ease;
+    }
+    .form-input::placeholder { color: rgba(255,255,255,0.35); }
+    .form-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,160,23,0.15), 0 4px 16px rgba(0,0,0,0.2);
+      background: rgba(139,69,19,0.45);
+    }
+
+    /* === ESTILO SELECTOR === */
+    .style-grid {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .style-option {
+      flex: 1;
+      text-align: center;
+      padding: 16px 12px;
+      border-radius: 16px;
+      background: rgba(139,69,19,0.35);
+      border: 2px solid rgba(212,160,23,0.2);
+      color: rgba(255,255,255,0.7);
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .style-option:hover { border-color: var(--gold); color: white; }
+    .style-option.active {
+      background: var(--gold); color: #2d0505;
+      border-color: var(--gold);
+      box-shadow: 0 4px 16px rgba(212,160,23,0.3);
+    }
+
+    /* === TIPO SELECTOR (aparece só pra Básica) === */
+    .tipo-wrapper {
+      display: none;
+      margin-top: 16px;
+      animation: fadeIn 0.3s ease;
+    }
+    .tipo-wrapper.visible {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .tipo-grid {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .tipo-option {
+      flex: 1;
+      min-width: 100px;
+      text-align: center;
+      padding: 12px 10px;
+      border-radius: 14px;
+      background: rgba(139,69,19,0.3);
+      border: 2px solid rgba(212,160,23,0.15);
+      color: rgba(255,255,255,0.7);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-transform: uppercase;
+    }
+    .tipo-option:hover { border-color: var(--gold); color: white; }
+    .tipo-option.active {
+      background: rgba(212,160,23,0.25);
+      border-color: var(--gold);
+      color: white;
+      box-shadow: 0 4px 16px rgba(212,160,23,0.15);
+    }
+
+    /* === SIZE GRID === */
+    .size-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .size-option {
+      flex: 1; min-width: 50px; text-align: center; padding: 12px 10px; border-radius: 14px;
+      background: rgba(139,69,19,0.35); border: 1px solid rgba(212,160,23,0.2);
+      color: rgba(255,255,255,0.7); font-weight: 700; font-size: 15px;
+      cursor: pointer; transition: all 0.25s ease; text-transform: uppercase;
+    }
+    .size-option:hover { border-color: var(--gold); color: white; }
+    .size-option.active {
+      background: var(--gold); color: #2d0505; border-color: var(--gold);
+      box-shadow: 0 4px 16px rgba(212,160,23,0.3);
+    }
+
+    /* === OPÇÕES DE PAGAMENTO === */
+    .payment-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .payment-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      background: rgba(139,69,19,0.25);
+      border: 2px solid rgba(212,160,23,0.15);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .payment-option:hover {
+      border-color: rgba(212,160,23,0.4);
+      background: rgba(139,69,19,0.35);
+    }
+    .payment-option.active {
+      border-color: var(--gold);
+      background: rgba(212,160,23,0.15);
+      box-shadow: 0 4px 20px rgba(212,160,23,0.15);
+    }
+    .payment-option input {
+      width: 20px; height: 20px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+    .payment-option-label {
+      flex: 1;
+    }
+    .payment-option-label strong {
+      display: block;
+      font-size: 16px;
+      color: white;
+      margin-bottom: 2px;
+    }
+    .payment-option-label span {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+    }
+    .payment-icon {
+      font-size: 24px;
+    }
+
+    /* === ÁREA DE INFORMAÇÕES === */
+    .info-area {
+      position: relative; z-index: 1;
+    }
+    .info-image {
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      border: 1px solid rgba(212,160,23,0.2);
+    }
+    .info-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .info-obs {
+      background: rgba(139,69,19,0.2);
+      border: 1px solid rgba(212,160,23,0.15);
+      border-radius: 14px;
+      padding: 16px 18px;
+    }
+    .info-obs h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gold-light);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .info-obs ul {
+      list-style: none;
+      padding: 0;
+    }
+    .info-obs ul li {
+      font-size: 13px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.7;
+      padding-left: 18px;
+      position: relative;
+    }
+    .info-obs ul li::before {
+      content: "•";
+      color: var(--gold);
+      position: absolute;
+      left: 0;
+      font-weight: 900;
+    }
+
+    .submit-btn {
+      width: 100%; padding: 18px;
+      background: linear-gradient(135deg, var(--gold), #b8860b);
+      border: none; border-radius: 16px;
+      color: #2d0505; font-size: 17px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 3px;
+      cursor: pointer; margin-top: 20px;
+      box-shadow: 0 8px 24px rgba(212,160,23,0.3);
+      transition: all 0.3s ease; position: relative; z-index: 1;
+    }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(212,160,23,0.4); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* ============================================
+       MODAL PIX
+       ============================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(45, 5, 5, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s var(--ease-cinematic);
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-box {
+      width: 100%;
+      max-width: 480px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+      padding: 44px 36px;
+      position: relative;
+      overflow: hidden;
+      transform: translateY(30px) scale(0.95);
+      transition: transform 0.5s var(--ease-cinematic);
+    }
+    .modal-overlay.active .modal-box {
+      transform: translateY(0) scale(1);
+    }
+    .modal-box::before {
+      content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08) 0%, transparent 50%);
+      pointer-events:none;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 20px;
+      background: none; border: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 28px; cursor: pointer;
+      line-height: 1; z-index: 2;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: white; }
+    .modal-title {
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 900;
+      color: var(--gold-light);
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 6px;
+      letter-spacing: 2px;
+      position: relative; z-index: 1;
+    }
+    .modal-subtitle {
+      text-align: center;
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      margin-bottom: 24px;
+      position: relative; z-index: 1;
+    }
+    .modal-value {
+      text-align: center;
+      font-size: 38px;
+      font-weight: 900;
+      color: white;
+      margin-bottom: 24px;
+      position: relative; z-index: 1;
+      text-shadow: 0 4px 20px rgba(212,160,23,0.3);
+    }
+    .modal-value span {
+      font-size: 16px;
+      color: var(--gold-light);
+      display: block;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    .qr-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+      position: relative; z-index: 1;
+    }
+    .qr-frame {
+      width: 260px; height: 260px;
+      border-radius: 20px;
+      padding: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .qr-frame img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 16px rgba(0,0,0,0.4));
+    }
+    .qr-caption {
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .pix-row {
+      background: rgba(139,69,19,0.35);
+      border: 1px solid rgba(212,160,23,0.25);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      position: relative; z-index: 1;
+    }
+    .pix-row code {
+      flex: 1;
+      font-size: 12px;
+      color: rgba(255,255,255,0.9);
+      word-break: break-all;
+      font-family: 'Courier New', monospace;
+    }
+    .pix-copy {
+      background: var(--gold);
+      border: none;
+      border-radius: 10px;
+      padding: 8px 12px;
+      color: var(--darker-red);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .pix-copy:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(212,160,23,0.3); }
+    .pix-copy.ok { background: #2ecc71; color: white; }
+    .sep {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 16px 0;
+      position: relative; z-index: 1;
+    }
+    .sep::before, .sep::after {
+      content: ""; flex: 1; height: 1px;
+      background: rgba(212,160,23,0.25);
+    }
+    .sep span {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .wa-box {
+      background: rgba(37, 211, 102, 0.1);
+      border: 1px solid rgba(37, 211, 102, 0.25);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 14px;
+      position: relative; z-index: 1;
+    }
+    .wa-box p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .wa-btn {
+      display: inline-block;
+      background: #25d366;
+      color: white;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+    .wa-btn:hover { transform: scale(1.05); box-shadow: 0 4px 16px rgba(37,211,102,0.3); }
+    .confirm-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      border: none;
+      border-radius: 14px;
+      color: white;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(46,204,113,0.3);
+      transition: all 0.3s ease;
+      position: relative; z-index: 1;
+    }
+    .confirm-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(46,204,113,0.4); }
+
+    /* ============================================
+       TELA DE SUCESSO
+       ============================================ */
+    .success-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(45, 5, 5, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s var(--ease-cinematic);
+    }
+    .success-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .success-box {
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.6s var(--ease-cinematic);
+    }
+    .success-overlay.active .success-box {
+      transform: scale(1) translateY(0);
+    }
+    .success-icon {
+      font-size: 72px;
+      margin-bottom: 16px;
+      filter: drop-shadow(0 4px 16px rgba(46,204,113,0.4));
+    }
+    .success-title {
+      font-size: clamp(24px, 5vw, 36px);
+      font-weight: 900;
+      color: var(--gold-light);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+      text-shadow: 0 4px 20px rgba(212,160,23,0.3);
+    }
+    .success-msg {
+      font-size: 15px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+    .success-msg strong {
+      color: var(--gold-light);
+    }
+    .success-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .success-btn {
+      padding: 14px 24px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .success-btn.primary {
+      background: linear-gradient(135deg, var(--gold), #b8860b);
+      color: var(--darker-red);
+      box-shadow: 0 8px 24px rgba(212,160,23,0.3);
+    }
+    .success-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(212,160,23,0.4); }
+    .success-btn.secondary {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: white;
+    }
+    .success-btn.secondary:hover { background: rgba(255,255,255,0.15); }
+
+    /* ============================================
+       RESPONSIVO
+       ============================================ */
+    @media (max-width: 640px) {
+      .header { height: 56px; padding: 0 16px; border-radius: 16px; width: calc(100% - 24px); }
+      .header-text-left, .header-text-right { font-size: 11px; letter-spacing: 2px; }
+      .header-logo-img { height: 28px; }
+      .form-card { padding: 32px 20px; border-radius: 24px; max-width: 100%; }
+      .form-title { font-size: clamp(24px, 6vw, 36px); margin-bottom: 28px; }
+      .form-label { font-size: 13px; }
+      .form-input { padding: 14px 16px; font-size: 15px; }
+      .style-option { padding: 14px 10px; font-size: 14px; }
+      .tipo-option { padding: 10px 8px; font-size: 13px; min-width: 80px; }
+      .size-option { padding: 10px 8px; font-size: 14px; }
+      .payment-option { padding: 14px 16px; }
+      .payment-option-label strong { font-size: 14px; }
+      .payment-option-label span { font-size: 12px; }
+      .submit-btn { padding: 16px; font-size: 15px; }
+      .arrow-deco { font-size: 32px; }
+      .hero-logo img { width: clamp(160px, 55vw, 400px); }
+      .shirt-container { height: 420px; }
+      .modal-box { padding: 32px 20px; border-radius: 24px; }
+      .modal-value { font-size: 32px; }
+      .qr-frame { width: 200px; height: 200px; }
+      .style-grid { flex-direction: column; }
+    }
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .form-card { max-width: 640px; padding: 44px 36px; }
+      .qr-frame { width: 240px; height: 240px; }
+    }
+    @media (min-width: 1400px) {
+      .form-card { max-width: 800px; padding: 60px 56px; }
+      .form-input { font-size: 17px; padding: 18px 22px; }
+      .style-option { font-size: 16px; padding: 18px 14px; }
+      .size-option { font-size: 16px; padding: 14px 12px; }
+      .qr-frame { width: 300px; height: 300px; }
+    }
+  </style>
+<base target="_blank">
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <header class="header" id="header">
+    <span class="header-text-left">CONGRESSO</span>
+    <img class="header-logo-img" id="headerLogoImg" src="Núcleo-9.png" alt="Núcleo 9">
+    <span class="header-text-right">2026</span>
+  </header>
+
+  <section class="hero" id="hero">
+    <div class="hero-logo" id="heroLogo">
+      <img id="heroLogoImg" src="Núcleo-9.png" alt="Núcleo 9">
+    </div>
+  </section>
+
+  <section class="shirt-section" id="shirtSection">
+    <div class="bg-text reveal" id="bgText">A ESPERA<br>ACABOU!</div>
+    <div class="arrow-deco arrow-left reveal">↙</div>
+    <div class="arrow-deco arrow-right reveal">↘</div>
+    <div class="cta-text reveal" id="ctaText">ADQUIRA JÁ A SUA!</div>
+    <div class="shirt-container reveal" id="shirtContainer">
+      <model-viewer
+        id="shirtModel"
+        src="Camiseta N9.glb"
+        alt="Camiseta Congresso Núcleo 9"
+        camera-controls
+        auto-rotate
+        auto-rotate-delay="2000"
+        rotation-per-second="15deg"
+        shadow-intensity="1"
+        exposure="1.2"
+        environment-image="neutral"
+        interaction-prompt="none"
+        style="width:100%; height:100%;"
+      ></model-viewer>
+    </div>
+    <p class="shirt-hint reveal">← Arraste para girar →</p>
+  </section>
+
+  <!-- ==========================================
+       FORMULÁRIO — DOIS ESTILOS DE CAMISETA
+       ========================================== -->
+  <section class="form-section" id="formSection">
+    <div class="form-card reveal" id="formCard">
+      <h2 class="form-title">ADQUIRA JÁ A SUA!</h2>
+
+      <form id="regForm" action="https://formspree.io/f/mbgrvjeg" method="POST">
+
+        <div class="form-group">
+          <label class="form-label">Nome:</label>
+          <input type="text" name="nome" class="form-input" placeholder="Digite seu nome completo" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Número:</label>
+          <input type="tel" name="numero" class="form-input" placeholder="(00) 00000-0000" required>
+        </div>
+
+        <!-- === ESTILO DA CAMISETA === -->
+        <div class="form-group">
+          <label class="form-label">Estilo da Camiseta: <span style="color:#e74c3c">*</span></label>
+          <div class="style-grid">
+            <div class="style-option" data-value="Oversized" onclick="selectStyle(this)">
+              👕 Oversized
+            </div>
+            <div class="style-option" data-value="Básica" onclick="selectStyle(this)">
+              👚 Básica
+            </div>
+          </div>
+          <input type="hidden" name="estilo" id="estiloInput" value="" required>
+          <small id="estiloError" style="color:#e74c3c; font-size:12px; display:none; margin-top:6px;">
+            ⚠ Selecione um estilo
+          </small>
+        </div>
+
+        <!-- === TIPO (aparece só pra Básica) === -->
+        <div class="form-group tipo-wrapper" id="tipoWrapper">
+          <label class="form-label">Tipo:</label>
+          <div class="tipo-grid">
+            <div class="tipo-option" data-value="Normal" onclick="selectTipo(this)">Normal</div>
+            <div class="tipo-option" data-value="Baby look" onclick="selectTipo(this)">Baby Look</div>
+            <div class="tipo-option" data-value="Infantil" onclick="selectTipo(this)">Infantil</div>
+          </div>
+          <input type="hidden" name="tipo" id="tipoInput" value="">
+        </div>
+
+        <!-- === TAMANHO — muda conforme estilo/tipo === -->
+        <div class="form-group">
+          <label class="form-label">Tamanho: <span style="color:#e74c3c">*</span></label>
+          <div class="size-grid" id="sizeGrid">
+            <!-- Preenchido dinamicamente pelo JS -->
+            <div style="color:rgba(255,255,255,0.4); font-size:13px; padding:10px;">
+              Selecione um estilo primeiro
+            </div>
+          </div>
+          <input type="hidden" name="tamanho" id="tamanhoInput" value="" required>
+          <small id="tamanhoError" style="color:#e74c3c; font-size:12px; display:none; margin-top:6px;">
+            ⚠ Selecione um tamanho
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Outro:</label>
+          <input type="text" name="outro" class="form-input" placeholder="Especifique outro tamanho">
+        </div>
+
+        <!-- INFORMAÇÕES — IMAGEM + OBSERVAÇÕES -->
+        <div class="form-group">
+          <label class="form-label">Informações:</label>
+          <div class="info-area">
+            <div class="info-image">
+              <img 
+                id="infoTabelaImg"
+                src="Camiseta-Tamanhos.png" 
+                alt="Tabela de medidas das camisetas"
+                onerror="this.style.display='none'"
+              >
+            </div>
+            <div class="info-obs">
+              <h4>Observações</h4>
+              <ul>
+                <li>As camisetas são 100% algodão</li>
+                <li>Modelagem unissex (Oversized)</li>
+                <li>Consulte a tabela antes de escolher</li>
+                <li>Trocas informar com antecedência e somente no dia do evento</li>
+                <li>Na modelagem Oversized indicamos uma numeração menor</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORMA DE PAGAMENTO -->
+        <div class="form-group">
+          <label class="form-label">Forma de Pagamento:</label>
+          <div class="payment-options">
+            <label class="payment-option active" onclick="selectPayment(this, 'pix')">
+              <input type="radio" name="forma_pagamento" value="Pix" checked>
+              <span class="payment-icon">💠</span>
+              <span class="payment-option-label">
+                <strong>Pagar com Pix</strong>
+                <span>Escaneie o QR Code e envie o comprovante</span>
+              </span>
+            </label>
+            <label class="payment-option" onclick="selectPayment(this, 'reserva')">
+              <input type="radio" name="forma_pagamento" value="Reserva">
+              <span class="payment-icon">📦</span>
+              <span class="payment-option-label">
+                <strong>Reservar — Pagar no Evento</strong>
+                <span>Retire e pague pessoalmente no dia</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <input type="hidden" name="status" id="statusInput" value="Aguardando Pagamento">
+
+        <button type="submit" class="submit-btn" id="submitBtn">Enviar Inscrição</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       MODAL PIX
+       ========================================== -->
+  <div class="modal-overlay" id="pixModal">
+    <div class="modal-box">
+      <button class="modal-close" id="pixClose">&times;</button>
+
+      <h2 class="modal-title">Pagamento via Pix</h2>
+      <p class="modal-subtitle">Escaneie ou copie a chave</p>
+
+      <div class="modal-value" id="pixValue">
+        R$ 50,00
+        <span>Camiseta Congresso Núcleo 9</span>
+      </div>
+
+      <div class="qr-wrap">
+        <div class="qr-frame">
+          <img id="qrCodeImg"
+            src="qrcodePagamento.png" 
+            alt="QR Code Pix">
+        </div>
+        <span class="qr-caption">Escaneie para pagar</span>
+      </div>
+
+      <div class="pix-row">
+        <code id="pixKeyCode">mateusduarte05@gmail.com</code>
+        <button class="pix-copy" id="pixCopyBtn" onclick="copyPix()">Copiar</button>
+      </div>
+
+      <div class="sep"><span>ou</span></div>
+
+      <div class="wa-box">
+        <p>Após pagar, envie o comprovante pelo WhatsApp para confirmarmos:</p>
+        <a class="wa-btn" id="pixWaBtn" href="#" target="_blank">Enviar Comprovante</a>
+      </div>
+
+      <button class="confirm-btn" id="confirmPaymentBtn" onclick="confirmPayment()">
+        ✓ Já realizei o pagamento
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       TELA DE SUCESSO
+       ========================================== -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-box">
+      <div class="success-icon" id="successIcon">✅</div>
+      <h2 class="success-title" id="successTitle">Inscrição Confirmada!</h2>
+      <p class="success-msg" id="successMsg">
+        Seu pedido foi registrado com sucesso.<br>
+        <strong>Status:</strong> Aguardando pagamento via Pix.<br>
+        Assim que confirmarmos seu comprovante, atualizaremos seu status.
+      </p>
+      <div class="success-actions">
+        <button class="success-btn primary" onclick="newOrder()">Fazer Novo Pedido</button>
+        <button class="success-btn secondary" onclick="closeSuccess()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // CONFIGURAÇÕES
+    // ============================================
+    const CONFIG = {
+      logoImage: "Núcleo-9.png",
+      shirtModel: "Camiseta N9.glb",
+      formspreeEndpoint: "https://formspree.io/f/mbgrvjeg",
+      valorCamiseta: "R$ 60,00",
+      chavePix: "mateusduarte05@gmail.com",
+      numeroWhatsApp: "553499414106",
+      mensagemWhatsApp: "Olá! Acabei de realizar o pagamento da camiseta do Congresso Núcleo 9. Segue o comprovante:"
+    };
+
+    // ============================================
+    // MAPA DE TAMANHOS POR ESTILO/TIPO
+    // ============================================
+    const TAMANHOS = {
+      Oversized: ['PP', 'P', 'M', 'G', 'GG', 'XG', 'EXG'],
+      'Básica': {
+        Normal: ['P', 'M', 'G', 'GG', 'XG', 'EXG'],
+        'Baby look': ['PP', 'P', 'M', 'G', 'GG', 'XG', 'EXG'],
+        Infantil: ['2', '4', '6', '8', '10', '12', '14']
+      }
+    };
+
+    let currentStyle = null;
+    let currentTipo = null;
+    let currentPaymentMethod = 'pix';
+    let formDataCache = null;
+
+    // ============================================
+    // SCROLL REVEAL
+    // ============================================
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ============================================
+    // LOGO SCROLL
+    // ============================================
+    const heroLogo = document.getElementById('heroLogo');
+    const header = document.getElementById('header');
+
+    function updateScroll() {
+      const scrollY = window.scrollY;
+      const vh = window.innerHeight;
+      const threshold = vh * 0.55;
+      let progress = scrollY / threshold;
+      if (progress > 1) progress = 1;
+      if (progress < 0) progress = 0;
+      const startTop = vh / 2;
+      const startLeft = window.innerWidth / 2;
+      const headerRect = header.getBoundingClientRect();
+      const endTop = headerRect.top + headerRect.height / 2 + scrollY;
+      const endLeft = headerRect.left + headerRect.width / 2;
+      const startWidth = Math.min(window.innerWidth * 0.45, 480);
+      const endWidth = 120;
+      const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      const p = ease(progress);
+      const currentTop = startTop + (endTop - startTop) * p;
+      const currentLeft = startLeft + (endLeft - startLeft) * p;
+      const currentWidth = startWidth + (endWidth - startWidth) * p;
+      heroLogo.style.top = currentTop + 'px';
+      heroLogo.style.left = currentLeft + 'px';
+      heroLogo.style.transform = `translate(-50%, -50%) scale(${currentWidth / startWidth})`;
+      if (progress > 0.85) {
+        heroLogo.style.opacity = 1 - (progress - 0.85) / 0.15;
+      } else {
+        heroLogo.style.opacity = 1;
+      }
+      if (progress > 0.7) {
+        header.classList.add('visible');
+      } else {
+        header.classList.remove('visible');
+      }
+      if (scrollY > threshold + 100) {
+        header.style.boxShadow = '0 12px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)';
+      } else {
+        header.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)';
+      }
+    }
+    window.addEventListener('scroll', updateScroll);
+    window.addEventListener('resize', updateScroll);
+
+    // ============================================
+    // MODEL VIEWER
+    // ============================================
+    const shirtModel = document.getElementById('shirtModel');
+    let modelLoaded = false;
+    shirtModel.addEventListener('load', () => {
+      modelLoaded = true;
+      shirtModel.autoRotate = false;
+    });
+    window.addEventListener('scroll', () => {
+      const shirtSection = document.getElementById('shirtSection');
+      const rect = shirtSection.getBoundingClientRect();
+      const progress = 1 - (rect.top / window.innerHeight);
+      if (modelLoaded && progress > 0 && progress < 2) {
+        const orbit = shirtModel.getCameraOrbit();
+        shirtModel.cameraOrbit = `${progress * 60}deg ${orbit.theta} ${orbit.radius}`;
+      }
+    });
+
+    // ============================================
+    // SELECT ESTILO
+    // ============================================
+    function selectStyle(el) {
+      document.querySelectorAll('.style-option').forEach(opt => opt.classList.remove('active'));
+      el.classList.add('active');
+      currentStyle = el.dataset.value;
+      document.getElementById('estiloInput').value = currentStyle;
+      document.getElementById('estiloError').style.display = 'none';
+
+      const tipoWrapper = document.getElementById('tipoWrapper');
+
+      if (currentStyle === 'Básica') {
+        tipoWrapper.classList.add('visible');
+        // Reseta tipo
+        currentTipo = null;
+        document.getElementById('tipoInput').value = '';
+        document.querySelectorAll('.tipo-option').forEach(opt => opt.classList.remove('active'));
+        renderSizes([]); // Limpa tamanhos até selecionar tipo
+      } else {
+        // Oversized
+        tipoWrapper.classList.remove('visible');
+        currentTipo = null;
+        document.getElementById('tipoInput').value = '';
+        renderSizes(TAMANHOS.Oversized);
+      }
+
+      // Limpa tamanho selecionado
+      document.getElementById('tamanhoInput').value = '';
+      document.getElementById('tamanhoError').style.display = 'none';
+    }
+
+    // ============================================
+    // SELECT TIPO (Básica)
+    // ============================================
+    function selectTipo(el) {
+      document.querySelectorAll('.tipo-option').forEach(opt => opt.classList.remove('active'));
+      el.classList.add('active');
+      currentTipo = el.dataset.value;
+      document.getElementById('tipoInput').value = currentTipo;
+
+      // Renderiza tamanhos conforme tipo
+      const sizes = TAMANHOS['Básica'][currentTipo] || [];
+      renderSizes(sizes);
+
+      // Limpa tamanho selecionado
+      document.getElementById('tamanhoInput').value = '';
+      document.getElementById('tamanhoError').style.display = 'none';
+    }
+
+    // ============================================
+    // RENDERIZAR TAMANHOS
+    // ============================================
+    function renderSizes(sizes) {
+      const grid = document.getElementById('sizeGrid');
+      grid.innerHTML = '';
+
+      if (sizes.length === 0) {
+        grid.innerHTML = '<div style="color:rgba(255,255,255,0.4); font-size:13px; padding:10px;">Selecione o estilo e tipo primeiro</div>';
+        return;
+      }
+
+      sizes.forEach(size => {
+        const div = document.createElement('div');
+        div.className = 'size-option';
+        div.dataset.value = size;
+        div.textContent = size;
+        div.onclick = function() { selectSize(this); };
+        grid.appendChild(div);
+      });
+    }
+
+    // ============================================
+    // SELECT TAMANHO
+    // ============================================
+    function selectSize(el) {
+      document.querySelectorAll('.size-option').forEach(opt => opt.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('tamanhoInput').value = el.dataset.value;
+      document.getElementById('tamanhoError').style.display = 'none';
+    }
+
+    // ============================================
+    // PAYMENT SELECTOR
+    // ============================================
+    function selectPayment(el, method) {
+      document.querySelectorAll('.payment-option').forEach(opt => {
+        opt.classList.remove('active');
+        opt.querySelector('input').checked = false;
+      });
+      el.classList.add('active');
+      el.querySelector('input').checked = true;
+      currentPaymentMethod = method;
+    }
+
+    // ============================================
+    // MODAL PIX
+    // ============================================
+    const pixModal = document.getElementById('pixModal');
+    const pixClose = document.getElementById('pixClose');
+
+    function openPixModal() {
+      pixModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closePixModal() {
+      pixModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    pixClose.addEventListener('click', closePixModal);
+    pixModal.addEventListener('click', (e) => { if (e.target === pixModal) closePixModal(); });
+
+    function copyPix() {
+      const btn = document.getElementById('pixCopyBtn');
+      navigator.clipboard.writeText(CONFIG.chavePix).then(() => {
+        btn.textContent = 'Copiado!'; btn.classList.add('ok');
+        setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('ok'); }, 2000);
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = CONFIG.chavePix;
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
+        btn.textContent = 'Copiado!'; btn.classList.add('ok');
+        setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('ok'); }, 2000);
+      });
+    }
+
+    // ============================================
+    // TELA DE SUCESSO
+    // ============================================
+    const successOverlay = document.getElementById('successOverlay');
+    const successTitle = document.getElementById('successTitle');
+    const successMsg = document.getElementById('successMsg');
+    const successIcon = document.getElementById('successIcon');
+
+    function showSuccess(type) {
+      if (type === 'pix') {
+        successIcon.textContent = '💠';
+        successTitle.textContent = 'Pagamento em Análise';
+        successMsg.innerHTML = 
+          'Seu pedido foi registrado com sucesso.<br>' +
+          '<strong>Status:</strong> Aguardando confirmação do comprovante.<br>' +
+          'Assim que nossa equipe validar o pagamento, seu status será atualizado para <strong>PAGO</strong>.';
+      } else if (type === 'reserva') {
+        successIcon.textContent = '📦';
+        successTitle.textContent = 'Reserva Confirmada!';
+        successMsg.innerHTML = 
+          'Sua camiseta está reservada com sucesso.<br>' +
+          '<strong>Status:</strong> Reservado — Pagar no evento.<br>' +
+          'No dia do congresso, dirija-se ao balcão de atendimento, pague e retire sua camiseta na hora!';
+      } else if (type === 'confirmado') {
+        successIcon.textContent = '✅';
+        successTitle.textContent = 'Pagamento Confirmado!';
+        successMsg.innerHTML = 
+          'Obrigado! Seu comprovante foi recebido.<br>' +
+          '<strong>Status:</strong> PAGO ✓<br>' +
+          'Sua camiseta está garantida. Nos vemos no Congresso Núcleo 9!';
+      }
+      successOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSuccess() {
+      successOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function newOrder() {
+      closeSuccess();
+      closePixModal();
+      document.getElementById('regForm').reset();
+      document.querySelectorAll('.style-option').forEach(opt => opt.classList.remove('active'));
+      document.querySelectorAll('.tipo-option').forEach(opt => opt.classList.remove('active'));
+      document.getElementById('estiloInput').value = '';
+      document.getElementById('tipoInput').value = '';
+      document.getElementById('tamanhoInput').value = '';
+      document.getElementById('statusInput').value = 'Aguardando Pagamento';
+      document.getElementById('estiloError').style.display = 'none';
+      document.getElementById('tamanhoError').style.display = 'none';
+      document.getElementById('tipoWrapper').classList.remove('visible');
+      renderSizes([]);
+      currentStyle = null;
+      currentTipo = null;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ============================================
+    // CONFIRMAR PAGAMENTO
+    // ============================================
+    async function confirmPayment() {
+      const btn = document.getElementById('confirmPaymentBtn');
+      btn.textContent = 'Confirmando...';
+      btn.disabled = true;
+
+      try {
+        const confirmData = new FormData();
+        if (formDataCache) {
+          for (let [key, val] of formDataCache.entries()) {
+            confirmData.append(key, val);
+          }
+        }
+        confirmData.set('status', 'PAGO — Comprovante enviado pelo usuário');
+        confirmData.set('_subject', '✅ PAGAMENTO CONFIRMADO — Congresso Núcleo 9');
+
+        await fetch(CONFIG.formspreeEndpoint, {
+          method: 'POST',
+          body: confirmData,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        closePixModal();
+        showSuccess('confirmado');
+      } catch (e) {
+        closePixModal();
+        showSuccess('confirmado');
+      } finally {
+        btn.textContent = '✓ Já realizei o pagamento';
+        btn.disabled = false;
+      }
+    }
+
+    // ============================================
+    // FORM SUBMIT
+    // ============================================
+    const regForm = document.getElementById('regForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    regForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      // Validação do estilo
+      const estilo = document.getElementById('estiloInput').value;
+      if (!estilo) {
+        document.getElementById('estiloError').style.display = 'block';
+        document.querySelector('.style-grid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      // Validação do tipo (só pra Básica)
+      if (estilo === 'Básica' && !document.getElementById('tipoInput').value) {
+        document.getElementById('tipoWrapper').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      // Validação do tamanho
+      const tamanho = document.getElementById('tamanhoInput').value;
+      if (!tamanho) {
+        document.getElementById('tamanhoError').style.display = 'block';
+        document.getElementById('sizeGrid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Enviando...';
+      submitBtn.disabled = true;
+
+      const statusInput = document.getElementById('statusInput');
+      if (currentPaymentMethod === 'reserva') {
+        statusInput.value = 'Reservado — Pagar no evento';
+      } else {
+        statusInput.value = 'Aguardando Pagamento (Pix)';
+      }
+
+      try {
+        const response = await fetch(CONFIG.formspreeEndpoint, {
+          method: 'POST',
+          body: new FormData(regForm),
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          formDataCache = new FormData(regForm);
+
+          submitBtn.textContent = 'Inscrição Enviada!';
+          submitBtn.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
+          regForm.reset();
+          document.querySelectorAll('.style-option').forEach(opt => opt.classList.remove('active'));
+          document.querySelectorAll('.tipo-option').forEach(opt => opt.classList.remove('active'));
+          document.getElementById('estiloInput').value = '';
+          document.getElementById('tipoInput').value = '';
+          document.getElementById('tamanhoInput').value = '';
+          document.getElementById('estiloError').style.display = 'none';
+          document.getElementById('tamanhoError').style.display = 'none';
+          document.getElementById('tipoWrapper').classList.remove('visible');
+          renderSizes([]);
+          currentStyle = null;
+          currentTipo = null;
+
+          setTimeout(() => {
+            submitBtn.textContent = originalText;
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+
+            if (currentPaymentMethod === 'pix') {
+              openPixModal();
+            } else {
+              showSuccess('reserva');
+            }
+          }, 800);
+
+        } else {
+          throw new Error('Erro no envio');
+        }
+      } catch (error) {
+        submitBtn.textContent = 'Erro ao enviar. Tente novamente.';
+        submitBtn.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+        setTimeout(() => {
+          submitBtn.textContent = originalText;
+          submitBtn.style.background = '';
+          submitBtn.disabled = false;
+        }, 3000);
+      }
+    });
+
+    // ============================================
+    // PARALLAX BG TEXT
+    // ============================================
+    window.addEventListener('scroll', () => {
+      const bgText = document.getElementById('bgText');
+      const rect = bgText.parentElement.getBoundingClientRect();
+      const progress = 1 - (rect.top / window.innerHeight);
+      bgText.style.transform = `translate(-50%, calc(-50% + ${progress * -60}px))`;
+      bgText.style.opacity = Math.min(1, Math.max(0.2, progress * 1.2));
+    });
+
+    // ============================================
+    // FORMATAÇÃO AUTOMÁTICA DO TELEFONE
+    // Adicione isso no final do <script>, antes do "updateScroll();"
+    // ============================================
+
+    const numeroInput = document.querySelector('input[name="numero"]');
+
+    numeroInput.addEventListener('input', function(e) {
+    // Remove tudo que não for número
+    let valor = e.target.value.replace(/\D/g, '');
+  
+    // Limita a 11 dígitos
+     if (valor.length > 11) valor = valor.slice(0, 11);
+  
+     // Aplica a máscara conforme a quantidade de dígitos
+     if (valor.length > 7) {
+    // (00) 00000-0000  →  11 dígitos
+      e.target.value = `(${valor.slice(0, 2)}) ${valor.slice(2, 7)}-${valor.slice(7)}`;
+     } else if (valor.length > 2) {
+    // (00) 0000-0000   →  10 dígitos
+     e.target.value = `(${valor.slice(0, 2)}) ${valor.slice(2, 6)}-${valor.slice(6)}`;
+     } else if (valor.length > 0) {
+    // (00              →  começando
+     e.target.value = `(${valor}`;
+     }
+    });
+
+    // ============================================
+    // INICIALIZAÇÃO
+    // ============================================
+    document.getElementById('pixValue').innerHTML = CONFIG.valorCamiseta + '<span>Camiseta Congresso Núcleo 9</span>';
+    document.getElementById('pixKeyCode').textContent = CONFIG.chavePix;
+    document.getElementById('pixWaBtn').href = 
+      'https://wa.me/' + CONFIG.numeroWhatsApp + '?text=' + encodeURIComponent(CONFIG.mensagemWhatsApp);
+
+    updateScroll();
+  </script>
+</body>
+</html>
