@@ -825,6 +825,7 @@
 
   </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
   <div class="bg-grid"></div>
@@ -1080,9 +1081,9 @@
     // ============================================
     const CONFIG = {
       logoImage: "Núcleo-9.png",
-      shirtModel: "CamisetaN9-v1.glb",
+      shirtModel: "Camiseta N9.glb",
       // === SUBSTITUA A URL ABAIXO PELA URL DO SEU GOOGLE APPS SCRIPT ===
-      googleScriptEndpoint: "https://script.google.com/macros/s/AKfycbxfAPnSVMHLIFyfUUz19LnUzVEcQ4Vti0DWOqaPS6rZN8d7PW-89eLJF17r-j7MqgUO/exec",
+      googleScriptEndpoint: "https://script.google.com/macros/s/SEU_ID_AQUI/exec",
       valorCamiseta: "R$ 60,00",
       chavePix: "mateusduarte05@gmail.com",
       numeroWhatsApp: "553499414106",
@@ -1362,6 +1363,7 @@
       renderSizes([]);
       currentStyle = null;
       currentTipo = null;
+      currentPedidoId = null;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1380,8 +1382,10 @@
             confirmPayload[key] = val;
           }
         }
+        confirmPayload.pedidoId = currentPedidoId;
         confirmPayload.status = 'PAGO — Comprovante enviado pelo usuário';
         confirmPayload.tipoRegistro = 'CONFIRMACAO_PAGAMENTO';
+        confirmPayload.dataConfirmacao = new Date().toLocaleString('pt-BR');
 
         await fetch(CONFIG.googleScriptEndpoint, {
           method: 'POST',
@@ -1443,12 +1447,16 @@
         statusInput.value = 'Aguardando Pagamento (Pix)';
       }
 
+      // Gera ID único para o pedido (timestamp + random)
+      currentPedidoId = 'N9-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+
       // Monta o payload JSON a partir do formulário
       const formData = new FormData(regForm);
       const payload = {};
       formData.forEach((value, key) => {
         payload[key] = value;
       });
+      payload.pedidoId = currentPedidoId;
       payload.tipoRegistro = 'NOVO_PEDIDO';
       payload.dataHora = new Date().toLocaleString('pt-BR');
 
