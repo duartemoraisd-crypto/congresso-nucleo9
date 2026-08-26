@@ -825,7 +825,6 @@
 
   </style>
 <base target="_blank">
-<base target="_blank">
 </head>
 <body>
   <div class="bg-grid"></div>
@@ -900,7 +899,7 @@
     <div class="form-card reveal" id="formCard">
       <h2 class="form-title">ADQUIRA JÁ A SUA!</h2>
 
-      <form id="regForm" action="https://formspree.io/f/mbgrvjeg" method="POST">
+      <form id="regForm" action="#" onsubmit="return false;">
 
         <div class="form-group">
           <label class="form-label">Nome:</label>
@@ -1081,8 +1080,9 @@
     // ============================================
     const CONFIG = {
       logoImage: "Núcleo-9.png",
-      shirtModel: "Camiseta N9.glb",
-      formspreeEndpoint: "https://formspree.io/f/mbgrvjeg",
+      shirtModel: "CamisetaN9-v1.glb",
+      // === SUBSTITUA A URL ABAIXO PELA URL DO SEU GOOGLE APPS SCRIPT ===
+      googleScriptEndpoint: "https://script.google.com/macros/s/AKfycbxfAPnSVMHLIFyfUUz19LnUzVEcQ4Vti0DWOqaPS6rZN8d7PW-89eLJF17r-j7MqgUO/exec",
       valorCamiseta: "R$ 60,00",
       chavePix: "mateusduarte05@gmail.com",
       numeroWhatsApp: "553499414106",
@@ -1374,19 +1374,20 @@
       btn.disabled = true;
 
       try {
-        const confirmData = new FormData();
+        const confirmPayload = {};
         if (formDataCache) {
           for (let [key, val] of formDataCache.entries()) {
-            confirmData.append(key, val);
+            confirmPayload[key] = val;
           }
         }
-        confirmData.set('status', 'PAGO — Comprovante enviado pelo usuário');
-        confirmData.set('_subject', '✅ PAGAMENTO CONFIRMADO — Congresso Núcleo 9');
+        confirmPayload.status = 'PAGO — Comprovante enviado pelo usuário';
+        confirmPayload.tipoRegistro = 'CONFIRMACAO_PAGAMENTO';
 
-        await fetch(CONFIG.formspreeEndpoint, {
+        await fetch(CONFIG.googleScriptEndpoint, {
           method: 'POST',
-          body: confirmData,
-          headers: { 'Accept': 'application/json' }
+          body: JSON.stringify(confirmPayload),
+          headers: { 'Content-Type': 'application/json' },
+          mode: 'no-cors'
         });
 
         closePixModal();
@@ -1442,46 +1443,53 @@
         statusInput.value = 'Aguardando Pagamento (Pix)';
       }
 
+      // Monta o payload JSON a partir do formulário
+      const formData = new FormData(regForm);
+      const payload = {};
+      formData.forEach((value, key) => {
+        payload[key] = value;
+      });
+      payload.tipoRegistro = 'NOVO_PEDIDO';
+      payload.dataHora = new Date().toLocaleString('pt-BR');
+
       try {
-        const response = await fetch(CONFIG.formspreeEndpoint, {
+        await fetch(CONFIG.googleScriptEndpoint, {
           method: 'POST',
-          body: new FormData(regForm),
-          headers: { 'Accept': 'application/json' }
+          body: JSON.stringify(payload),
+          headers: { 'Content-Type': 'application/json' },
+          mode: 'no-cors'
         });
 
-        if (response.ok) {
-          formDataCache = new FormData(regForm);
+        // Salva cache para confirmação de pagamento
+        formDataCache = new FormData(regForm);
 
-          submitBtn.textContent = 'Inscrição Enviada!';
-          submitBtn.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
-          regForm.reset();
-          document.querySelectorAll('.style-option').forEach(opt => opt.classList.remove('active'));
-          document.querySelectorAll('.tipo-option').forEach(opt => opt.classList.remove('active'));
-          document.getElementById('estiloInput').value = '';
-          document.getElementById('tipoInput').value = '';
-          document.getElementById('tamanhoInput').value = '';
-          document.getElementById('estiloError').style.display = 'none';
-          document.getElementById('tamanhoError').style.display = 'none';
-          document.getElementById('tipoWrapper').classList.remove('visible');
-          renderSizes([]);
-          currentStyle = null;
-          currentTipo = null;
+        submitBtn.textContent = 'Inscrição Enviada!';
+        submitBtn.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
+        regForm.reset();
+        document.querySelectorAll('.style-option').forEach(opt => opt.classList.remove('active'));
+        document.querySelectorAll('.tipo-option').forEach(opt => opt.classList.remove('active'));
+        document.getElementById('estiloInput').value = '';
+        document.getElementById('tipoInput').value = '';
+        document.getElementById('tamanhoInput').value = '';
+        document.getElementById('estiloError').style.display = 'none';
+        document.getElementById('tamanhoError').style.display = 'none';
+        document.getElementById('tipoWrapper').classList.remove('visible');
+        renderSizes([]);
+        currentStyle = null;
+        currentTipo = null;
 
-          setTimeout(() => {
-            submitBtn.textContent = originalText;
-            submitBtn.style.background = '';
-            submitBtn.disabled = false;
+        setTimeout(() => {
+          submitBtn.textContent = originalText;
+          submitBtn.style.background = '';
+          submitBtn.disabled = false;
 
-            if (currentPaymentMethod === 'pix') {
-              openPixModal();
-            } else {
-              showSuccess('reserva');
-            }
-          }, 800);
+          if (currentPaymentMethod === 'pix') {
+            openPixModal();
+          } else {
+            showSuccess('reserva');
+          }
+        }, 800);
 
-        } else {
-          throw new Error('Erro no envio');
-        }
       } catch (error) {
         submitBtn.textContent = 'Erro ao enviar. Tente novamente.';
         submitBtn.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
