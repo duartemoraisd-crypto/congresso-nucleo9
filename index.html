@@ -1009,7 +1009,7 @@
 
         <input type="hidden" name="status" id="statusInput" value="Aguardando Pagamento">
 
-        <button type="submit" class="submit-btn" id="submitBtn">Enviar Inscrição</button>
+        <button type="submit" class="submit-btn" id="submitBtn">Enviar Pedido</button>
       </form>
     </div>
   </section>
@@ -1471,7 +1471,7 @@
         // Salva cache para confirmação de pagamento
         formDataCache = new FormData(regForm);
 
-        submitBtn.textContent = 'Inscrição Enviada!';
+        submitBtn.textContent = 'Pedido Enviado!';
         submitBtn.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
         regForm.reset();
         document.querySelectorAll('.style-option').forEach(opt => opt.classList.remove('active'));
