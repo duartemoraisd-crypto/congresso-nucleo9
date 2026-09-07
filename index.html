@@ -431,6 +431,12 @@
       color: white;
     }
     .success-btn.secondary:hover { background: rgba(255,255,255,0.15); }
+    .success-btn.danger {
+      background: rgba(231,76,60,0.15);
+      border: 1px solid rgba(231,76,60,0.3);
+      color: #e74c3c;
+    }
+    .success-btn.danger:hover { background: rgba(231,76,60,0.25); }
 
     /* RESPONSIVO */
     @media (max-width: 640px) {
@@ -548,6 +554,11 @@
       border-radius: 20px;
       font-size: 11px; font-weight: 700;
       text-transform: uppercase; letter-spacing: 1px;
+    }
+    .lote-badge.encerrado {
+      background: rgba(231, 76, 60, 0.15);
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      color: #e74c3c;
     }
     .lote-badge.atual {
       background: rgba(46, 204, 113, 0.15);
@@ -757,12 +768,12 @@
         <div class="lote-item">
           <div class="lote-numero">1º Lote</div>
           <div class="lote-preco">R$ 60,00<span>por unidade</span></div>
-          <span class="lote-badge atual">Lote Atual</span>
+          <span class="lote-badge encerrado">Encerrado</span>
         </div>
         <div class="lote-item">
           <div class="lote-numero">2º Lote</div>
           <div class="lote-preco">R$ 65,00<span>por unidade</span></div>
-          <span class="lote-badge futuro">Em breve</span>
+          <span class="lote-badge atual">Lote Atual</span>
         </div>
         <div class="lote-item">
           <div class="lote-numero">3º Lote</div>
@@ -863,14 +874,40 @@
     </div>
   </div>
 
+  <!-- TELA DE LOTE ENCERRADO -->
+  <div class="success-overlay" id="loteOverlay">
+    <div class="success-box">
+      <div class="success-icon" style="filter:drop-shadow(0 4px 16px rgba(231,76,60,0.4));">⏰</div>
+      <h2 class="success-title" style="color:#e74c3c;">1º Lote Encerrado</h2>
+      <p class="success-msg" id="loteMsg">
+        O pedido <strong id="lotePedidoId">—</strong> foi feito no 1º lote (R$ 60,00).<br>
+        O valor atual é <strong>R$ 65,00</strong>.
+      </p>
+      <div class="success-details" id="loteDetails">
+        <!-- Preenchido via JavaScript -->
+      </div>
+      <div class="success-actions">
+        <button class="success-btn primary" id="btnPagarDiferenca" onclick="pagarDiferenca()">
+          Pagar Diferença de R$ 5,00
+        </button>
+        <button class="success-btn secondary" onclick="refazerPedidoLote()">
+          Refazer Pedido no Valor Atual
+        </button>
+        <a class="success-btn danger" id="linkWhatsLote" href="#" target="_blank">
+          📞 Falar no WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ============================================
-    // CONFIGURAÇÕES — ATUALIZE AQUI
+    // CONFIGURAÇÕES
     // ============================================
     const CONFIG = {
       logoImage: "Núcleo-9.png",
       shirtModel: "CamisetaN9-v1.glb",
-      // PREÇO DO LOTE ATUAL (1º lote = R$ 60,00)
+      // PREÇO DO LOTE ATUAL (2º lote = R$ 65,00)
       valorCamiseta: 65.00,
       numeroWhatsApp: "553499414106",
       mensagemWhatsApp: "Olá! Acabei de realizar o pagamento da camiseta do Congresso Núcleo 9. Segue o comprovante:",
@@ -897,7 +934,7 @@
     let currentPedidoId = null;
 
     // ============================================
-    // MÁSCARA DE TELEFONE (99) 99999-9999
+    // MÁSCARA DE TELEFONE
     // ============================================
     const telefoneInput = document.getElementById('telefoneInput');
 
@@ -1152,7 +1189,7 @@
     }
 
     // ============================================
-    // ENVIO DO PEDIDO (SERVER-SIDE VIA APPS SCRIPT)
+    // ENVIO DO PEDIDO
     // ============================================
     async function processarPedido() {
       const qtd = parseInt(document.getElementById('quantidadeInput').value) || 0;
@@ -1202,7 +1239,6 @@
       btn.textContent = "Processando pedido...";
 
       try {
-        // 🛡️ SEM header Content-Type → evita preflight CORS
         const resposta = await fetch(CONFIG.googleScriptEndpoint, {
           method: "POST",
           body: JSON.stringify(payload)
@@ -1212,7 +1248,6 @@
         console.log("📥 Resposta do servidor:", dados);
 
         if (dados.status === "success" && dados.checkout_url) {
-          // Salva no localStorage para exibir na tela de sucesso após pagamento
           const total = qtd * CONFIG.valorCamiseta;
           salvarPedidoPendente({
             pedidoId: currentPedidoId,
@@ -1305,27 +1340,146 @@
       document.getElementById('successOverlay').classList.add('active');
     }
 
+    // ============================================
+    // TELA DE LOTE ENCERRADO
+    // ============================================
+    function mostrarTelaLoteEncerrado(pedido, dados) {
+      const detalhes = document.getElementById('loteDetails');
+      const jaPagou = dados.statusPagamento === 'Pago' || dados.statusPagamento === 'approved' || dados.statusPagamento === 'paid';
+
+      document.getElementById('lotePedidoId').textContent = pedido.pedidoId;
+
+      const msgEl = document.getElementById('loteMsg');
+      const valorOriginalFmt = dados.valorOriginal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      const valorAtualFmt = dados.valorAtual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      const diferencaFmt = dados.diferenca.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+      if (jaPagou) {
+        msgEl.innerHTML = `
+          Você já pagou <strong>${valorOriginalFmt}</strong> 
+          no 1º lote, mas o valor atual é <strong>${valorAtualFmt}</strong>.<br>
+          Para confirmar sua camiseta, pague a diferença de <strong style="color:var(--gold-light);">${diferencaFmt}</strong>.
+        `;
+        document.getElementById('btnPagarDiferenca').style.display = 'block';
+        document.getElementById('btnPagarDiferenca').textContent = 
+          `Pagar Diferença de ${diferencaFmt}`;
+      } else {
+        msgEl.innerHTML = `
+          Este pedido foi gerado no 1º lote (<strong>${valorOriginalFmt}</strong>).<br>
+          O lote encerrou e o link de pagamento expirou. O valor atual é 
+          <strong style="color:var(--gold-light);">${valorAtualFmt}</strong>.
+        `;
+        document.getElementById('btnPagarDiferenca').style.display = 'none';
+      }
+
+      detalhes.innerHTML = `
+        <div class="success-detail-row">
+          <span class="success-detail-label">Pedido ID</span>
+          <span class="success-detail-value">${pedido.pedidoId}</span>
+        </div>
+        <div class="success-detail-row">
+          <span class="success-detail-label">Data do Pedido</span>
+          <span class="success-detail-value">${new Date(dados.dataCriacao).toLocaleString('pt-BR')}</span>
+        </div>
+        <div class="success-detail-row">
+          <span class="success-detail-label">Valor do 1º Lote</span>
+          <span class="success-detail-value">${valorOriginalFmt}</span>
+        </div>
+        <div class="success-detail-row">
+          <span class="success-detail-label">Valor Atual (2º Lote)</span>
+          <span class="success-detail-value" style="color:var(--gold-light);">${valorAtualFmt}</span>
+        </div>
+        ${dados.diferenca > 0 ? `
+        <div class="success-detail-row">
+          <span class="success-detail-label">Diferença</span>
+          <span class="success-detail-value" style="color:#e74c3c;">${diferencaFmt}</span>
+        </div>` : ''}
+      `;
+
+      const msgWhats = jaPagou 
+        ? `Olá! Meu pedido ${pedido.pedidoId} foi do 1º lote. Já paguei ${valorOriginalFmt} e quero pagar a diferença de ${diferencaFmt}.`
+        : `Olá! Meu pedido ${pedido.pedidoId} era do 1º lote e o link expirou. Quero refazer no valor atual de ${valorAtualFmt}.`;
+
+      document.getElementById('linkWhatsLote').href = 
+        `https://wa.me/${CONFIG.numeroWhatsApp}?text=${encodeURIComponent(msgWhats)}`;
+
+      document.getElementById('loteOverlay').classList.add('active');
+    }
+
+    async function pagarDiferenca() {
+      const pedido = obterPedidoPendente();
+      if (!pedido) return;
+
+      const btn = document.getElementById('btnPagarDiferenca');
+      btn.disabled = true;
+      btn.textContent = "Gerando link...";
+
+      try {
+        const resposta = await fetch(CONFIG.googleScriptEndpoint, {
+          method: "POST",
+          body: JSON.stringify({
+            tipoRegistro: "PAGAR_DIFERENCA",
+            pedidoId: pedido.pedidoId,
+            redirect_url: CONFIG.redirectUrlCartao
+          })
+        });
+        const dados = await resposta.json();
+
+        if (dados.status === "success" && dados.checkout_url) {
+          window.location.href = dados.checkout_url;
+        } else {
+          alert("Erro ao gerar link da diferença. Fale no WhatsApp.");
+          btn.disabled = false;
+        }
+      } catch (err) {
+        alert("Erro de conexão. Fale no WhatsApp.");
+        btn.disabled = false;
+      }
+    }
+
+    function refazerPedidoLote() {
+      limparPedidoPendente();
+      document.getElementById('loteOverlay').classList.remove('active');
+      document.getElementById('regForm').reset();
+      document.getElementById('camisetasContainer').innerHTML = '';
+      document.getElementById('totalBox').style.display = 'none';
+      camisetas = [];
+      gerarPedidoId();
+      window.scrollTo({ top: document.getElementById('formSection').offsetTop - 100, behavior: 'smooth' });
+    }
+
+    // ============================================
+    // VERIFICAR RETORNO DO PAGAMENTO (ATUALIZADO)
+    // ============================================
     async function verificarRetornoPagamento() {
       const urlParams = new URLSearchParams(window.location.search);
       const pedidoIdUrl = urlParams.get('order_nsu') || urlParams.get('pedidoId');
       const pedidoPendente = obterPedidoPendente();
 
-      if (pedidoIdUrl || pedidoPendente) {
-        const pedido = pedidoPendente || { pedidoId: pedidoIdUrl };
+      if (!pedidoIdUrl && !pedidoPendente) return;
 
-        try {
-          const consultaUrl = CONFIG.googleScriptEndpoint + "?acao=consultar&pedidoId=" + encodeURIComponent(pedido.pedidoId);
-          const resposta = await fetch(consultaUrl);
-          const dados = await resposta.json();
+      const pedido = pedidoPendente || { pedidoId: pedidoIdUrl };
 
-          if (dados.encontrado && dados.statusPagamento) {
-            pedido.status = dados.statusPagamento;
-            pedido.dataConfirmacao = dados.dataConfirmacao;
-          }
-        } catch (err) {
-          console.log("Não foi possível consultar status atualizado:", err);
+      try {
+        const consultaUrl = CONFIG.googleScriptEndpoint + "?acao=consultar&pedidoId=" + encodeURIComponent(pedido.pedidoId);
+        const resposta = await fetch(consultaUrl);
+        const dados = await resposta.json();
+
+        // 🚨 LOTE ENCERRADO — mostra tela especial
+        if (dados.loteEncerrado) {
+          mostrarTelaLoteEncerrado(pedido, dados);
+          return;
         }
 
+        // ✅ Fluxo normal (lote atual)
+        if (dados.encontrado && dados.statusPagamento) {
+          pedido.status = dados.statusPagamento;
+          pedido.dataConfirmacao = dados.dataConfirmacao;
+        }
+        mostrarTelaSucesso(pedido);
+
+      } catch (err) {
+        console.log("Não foi possível consultar status:", err);
         mostrarTelaSucesso(pedido);
       }
     }
