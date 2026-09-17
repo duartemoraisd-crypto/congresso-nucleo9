@@ -315,128 +315,52 @@
     .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(212,160,23,0.4); }
     .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-    /* TELA DE SUCESSO */
-    .success-overlay {
+    /* BANNER DISCRETO DE RETORNO */
+    .banner-retorno {
       position: fixed;
-      inset: 0;
-      background: rgba(45, 5, 5, 0.92);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      z-index: 300;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-120%);
+      width: calc(100% - 48px);
+      max-width: 720px;
+      background: rgba(46, 204, 113, 0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(46, 204, 113, 0.35);
+      border-radius: 16px;
+      padding: 16px 24px;
+      z-index: 200;
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 20px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.6s var(--ease-cinematic);
-    }
-    .success-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .success-box {
-      width: 100%;
-      max-width: 520px;
-      text-align: center;
-      transform: scale(0.9) translateY(20px);
-      transition: transform 0.6s var(--ease-cinematic);
-    }
-    .success-overlay.active .success-box {
-      transform: scale(1) translateY(0);
-    }
-    .success-icon {
-      font-size: 72px;
-      margin-bottom: 16px;
-      filter: drop-shadow(0 4px 16px rgba(46,204,113,0.4));
-    }
-    .success-title {
-      font-size: clamp(24px, 5vw, 36px);
-      font-weight: 900;
-      color: var(--gold-light);
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      margin-bottom: 12px;
-      text-shadow: 0 4px 20px rgba(212,160,23,0.3);
-    }
-    .success-msg {
-      font-size: 15px;
-      color: rgba(255,255,255,0.85);
-      line-height: 1.7;
-      margin-bottom: 24px;
-    }
-    .success-msg strong {
-      color: var(--gold-light);
-    }
-    .success-details {
-      background: rgba(139,69,19,0.25);
-      border: 1px solid rgba(212,160,23,0.25);
-      border-radius: 20px;
-      padding: 24px;
-      margin-bottom: 24px;
-      text-align: left;
-    }
-    .success-detail-row {
-      display: flex;
       justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      gap: 16px;
+      transition: transform 0.5s var(--ease-cinematic);
+    }
+    .banner-retorno.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+    .banner-retorno-texto {
       font-size: 14px;
-    }
-    .success-detail-row:last-child {
-      border-bottom: none;
-    }
-    .success-detail-label {
-      color: rgba(255,255,255,0.6);
+      color: #2ecc71;
       font-weight: 600;
+      line-height: 1.5;
     }
-    .success-detail-value {
-      color: white;
-      font-weight: 700;
-      text-align: right;
-    }
-    .success-detail-camiseta {
-      color: rgba(255,255,255,0.85);
-      font-size: 13px;
-      line-height: 1.6;
-      margin-top: 4px;
-    }
-    .success-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .success-btn {
-      padding: 14px 24px;
-      border-radius: 14px;
-      font-size: 14px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      cursor: pointer;
-      transition: all 0.3s ease;
+    .banner-retorno-fechar {
+      background: none;
       border: none;
-      text-decoration: none;
-      display: inline-block;
+      color: #2ecc71;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity 0.2s;
     }
-    .success-btn.primary {
-      background: linear-gradient(135deg, var(--gold), #b8860b);
-      color: var(--darker-red);
-      box-shadow: 0 8px 24px rgba(212,160,23,0.3);
+    .banner-retorno-fechar:hover { opacity: 1; }
+    @media (max-width: 640px) {
+      .banner-retorno { top: 80px; padding: 14px 18px; }
+      .banner-retorno-texto { font-size: 13px; }
     }
-    .success-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(212,160,23,0.4); }
-    .success-btn.secondary {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      color: white;
-    }
-    .success-btn.secondary:hover { background: rgba(255,255,255,0.15); }
-    .success-btn.danger {
-      background: rgba(231,76,60,0.15);
-      border: 1px solid rgba(231,76,60,0.3);
-      color: #e74c3c;
-    }
-    .success-btn.danger:hover { background: rgba(231,76,60,0.25); }
 
     /* RESPONSIVO */
     @media (max-width: 640px) {
@@ -455,8 +379,6 @@
       .hero-logo img { width: clamp(160px, 55vw, 400px); }
       .shirt-container { height: 420px; }
       .style-grid { flex-direction: column; }
-      .success-detail-row { flex-direction: column; gap: 4px; }
-      .success-detail-value { text-align: left; }
     }
     @media (min-width: 641px) and (max-width: 1024px) {
       .form-card { max-width: 640px; padding: 44px 36px; }
@@ -554,11 +476,6 @@
       border-radius: 20px;
       font-size: 11px; font-weight: 700;
       text-transform: uppercase; letter-spacing: 1px;
-    }
-    .lote-badge.encerrado {
-      background: rgba(231, 76, 60, 0.15);
-      border: 1px solid rgba(231, 76, 60, 0.3);
-      color: #e74c3c;
     }
     .lote-badge.atual {
       background: rgba(46, 204, 113, 0.15);
@@ -723,6 +640,14 @@
 <body>
   <div class="bg-grid"></div>
 
+  <!-- BANNER DISCRETO DE RETORNO DO CHECKOUT -->
+  <div class="banner-retorno" id="bannerRetorno">
+    <span class="banner-retorno-texto" id="bannerTexto">
+      Pedido registrado com sucesso! Assim que o pagamento for confirmado, entraremos em contato.
+    </span>
+    <button class="banner-retorno-fechar" onclick="fecharBanner()">&times;</button>
+  </div>
+
   <header class="header" id="header">
     <span class="header-text-left">CONGRESSO</span>
     <img class="header-logo-img" id="headerLogoImg" src="Núcleo-9.png" alt="Núcleo 9">
@@ -737,8 +662,8 @@
 
   <section class="shirt-section" id="shirtSection">
     <div class="bg-text reveal" id="bgText">A ESPERA<br>ACABOU!</div>
-    <div class="arrow-deco arrow-left reveal">↙</div>
-    <div class="arrow-deco arrow-right reveal">↘</div>
+    <div class="arrow-deco arrow-left reveal">&#8601;</div>
+    <div class="arrow-deco arrow-right reveal">&#8600;</div>
     <div class="cta-text reveal" id="ctaText">ADQUIRA JÁ A SUA!</div>
     <div class="shirt-container reveal" id="shirtContainer">
       <model-viewer
@@ -756,7 +681,7 @@
         style="width:100%; height:100%;"
       ></model-viewer>
     </div>
-    <p class="shirt-hint reveal">← Arraste para girar →</p>
+    <p class="shirt-hint reveal">&#8592; Arraste para girar &#8594;</p>
   </section>
 
   <!-- SEÇÃO DE LOTES -->
@@ -768,12 +693,12 @@
         <div class="lote-item">
           <div class="lote-numero">1º Lote</div>
           <div class="lote-preco">R$ 60,00<span>por unidade</span></div>
-          <span class="lote-badge encerrado">Encerrado</span>
+          <span class="lote-badge atual">Lote Atual</span>
         </div>
         <div class="lote-item">
           <div class="lote-numero">2º Lote</div>
           <div class="lote-preco">R$ 65,00<span>por unidade</span></div>
-          <span class="lote-badge atual">Lote Atual</span>
+          <span class="lote-badge futuro">Em breve</span>
         </div>
         <div class="lote-item">
           <div class="lote-numero">3º Lote</div>
@@ -856,62 +781,18 @@
     </div>
   </section>
 
-  <!-- TELA DE SUCESSO -->
-  <div class="success-overlay" id="successOverlay">
-    <div class="success-box">
-      <div class="success-icon" id="successIcon">✅</div>
-      <h2 class="success-title" id="successTitle">Pagamento Confirmado!</h2>
-      <p class="success-msg" id="successMsg">
-        Seu pedido foi registrado e o pagamento foi aprovado.<br>
-        Confira os detalhes abaixo:
-      </p>
-      <div class="success-details" id="successDetails">
-        <!-- Preenchido via JavaScript -->
-      </div>
-      <div class="success-actions">
-        <button class="success-btn primary" onclick="newOrder()">Fazer Novo Pedido</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- TELA DE LOTE ENCERRADO -->
-  <div class="success-overlay" id="loteOverlay">
-    <div class="success-box">
-      <div class="success-icon" style="filter:drop-shadow(0 4px 16px rgba(231,76,60,0.4));">⏰</div>
-      <h2 class="success-title" style="color:#e74c3c;">1º Lote Encerrado</h2>
-      <p class="success-msg" id="loteMsg">
-        O pedido <strong id="lotePedidoId">—</strong> foi feito no 1º lote (R$ 60,00).<br>
-        O valor atual é <strong>R$ 65,00</strong>.
-      </p>
-      <div class="success-details" id="loteDetails">
-        <!-- Preenchido via JavaScript -->
-      </div>
-      <div class="success-actions">
-        <button class="success-btn primary" id="btnPagarDiferenca" onclick="pagarDiferenca()">
-          Pagar Diferença de R$ 5,00
-        </button>
-        <button class="success-btn secondary" onclick="refazerPedidoLote()">
-          Refazer Pedido no Valor Atual
-        </button>
-        <a class="success-btn danger" id="linkWhatsLote" href="#" target="_blank">
-          📞 Falar no WhatsApp
-        </a>
-      </div>
-    </div>
-  </div>
-
   <script>
     // ============================================
-    // CONFIGURAÇÕES
+    // CONFIGURAÇÕES — ATUALIZE AQUI
     // ============================================
     const CONFIG = {
       logoImage: "Núcleo-9.png",
       shirtModel: "CamisetaN9-v1.glb",
-      // PREÇO DO LOTE ATUAL (2º lote = R$ 65,00)
-      valorCamiseta: 65.00,
+      valorCamiseta: 60.00,
       numeroWhatsApp: "553499414106",
       mensagemWhatsApp: "Olá! Acabei de realizar o pagamento da camiseta do Congresso Núcleo 9. Segue o comprovante:",
-      googleScriptEndpoint: "https://script.google.com/macros/s/AKfycbxRP09jGSTsQbdDKMmVYWGibuUOcc_KbLRpVA5fZWacsapxddwVhI8bmTNK2iRQoIhQ/exec",
+      // ⬇️ SUBSTITUA PELA URL DO SEU APPS SCRIPT APÓS REIMPLANTAR
+      googleScriptEndpoint: "https://script.google.com/macros/s/AKfycbyfIslUjunWSIJV83yxie0JEly2j6GO0tdkuW6dMm_KFUfsiEgfzBPWcn7_RKvykopq/exec",
       redirectUrlCartao: "https://duartemoraisd-crypto.github.io/congresso-nucleo9/"
     };
 
@@ -933,7 +814,7 @@
     let currentPedidoId = null;
 
     // ============================================
-    // MÁSCARA DE TELEFONE
+    // MÁSCARA DE TELEFONE (99) 99999-9999
     // ============================================
     const telefoneInput = document.getElementById('telefoneInput');
 
@@ -1064,10 +945,10 @@
           <div class="form-group" style="margin-bottom:16px;">
             <label class="form-label" style="font-size:13px;">Estilo: <span style="color:#e74c3c">*</span></label>
             <div class="style-grid" id="styleGrid-${i}">
-              <div class="style-option" data-value="Oversized" onclick="selectStyleBloco(${i}, this)">👕 Oversized</div>
-              <div class="style-option" data-value="Básica" onclick="selectStyleBloco(${i}, this)">👚 Básica</div>
+              <div class="style-option" data-value="Oversized" onclick="selectStyleBloco(${i}, this)">&#128085; Oversized</div>
+              <div class="style-option" data-value="Básica" onclick="selectStyleBloco(${i}, this)">&#128087; Básica</div>
             </div>
-            <small id="estiloError-${i}" style="color:#e74c3c; font-size:11px; display:none; margin-top:6px;">⚠ Selecione um estilo</small>
+            <small id="estiloError-${i}" style="color:#e74c3c; font-size:11px; display:none; margin-top:6px;">&#9888; Selecione um estilo</small>
           </div>
 
           <div class="tipo-wrapper-bloco" id="tipoWrapper-${i}">
@@ -1083,7 +964,7 @@
             <div class="size-grid" id="sizeGrid-${i}">
               <div style="color:rgba(255,255,255,0.4); font-size:12px; padding:8px;">Selecione o estilo primeiro</div>
             </div>
-            <small id="tamanhoError-${i}" style="color:#e74c3c; font-size:11px; display:none; margin-top:6px;">⚠ Selecione um tamanho</small>
+            <small id="tamanhoError-${i}" style="color:#e74c3c; font-size:11px; display:none; margin-top:6px;">&#9888; Selecione um tamanho</small>
           </div>
 
           <div class="form-group outro-input" style="margin-bottom:0; margin-top:12px;">
@@ -1182,13 +1063,9 @@
     function limparPedidoPendente() {
       localStorage.removeItem('pedidoNucleo9');
     }
-    function obterPedidoPendente() {
-      const dados = localStorage.getItem('pedidoNucleo9');
-      return dados ? JSON.parse(dados) : null;
-    }
 
     // ============================================
-    // ENVIO DO PEDIDO
+    // ENVIO DO PEDIDO (SERVER-SIDE VIA APPS SCRIPT)
     // ============================================
     async function processarPedido() {
       const qtd = parseInt(document.getElementById('quantidadeInput').value) || 0;
@@ -1247,7 +1124,6 @@
         console.log("📥 Resposta do servidor:", dados);
 
         if (dados.status === "success" && dados.checkout_url) {
-          const total = qtd * CONFIG.valorCamiseta;
           salvarPedidoPendente({
             pedidoId: currentPedidoId,
             nome: nome,
@@ -1256,7 +1132,7 @@
             camisetas_json: camisetas,
             forma_pagamento: "Cartão de Crédito",
             valorUnitario: CONFIG.valorCamiseta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
-            valorTotal: total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+            valorTotal: (qtd * CONFIG.valorCamiseta).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
           });
 
           window.location.href = dados.checkout_url;
@@ -1284,217 +1160,36 @@
     });
 
     // ============================================
-    // TELA DE SUCESSO / RETORNO DO PAGAMENTO
+    // BANNER DISCRETO AO VOLTAR DO CHECKOUT
     // ============================================
-    function formatarCamisetasTela(lista) {
-      if (!lista || !lista.length) return '<div class="success-detail-camiseta">Nenhuma camiseta informada</div>';
-      return lista.map((item, index) => {
-        const modelo = [item.estilo, item.tipo].filter(Boolean).join(' ');
-        const obs = item.outro ? ` <em>(${item.outro})</em>` : '';
-        return `<div class="success-detail-camiseta">Camiseta ${index + 1}: <strong>${modelo}</strong> — Tamanho: <strong>${item.tamanho}</strong>${obs}</div>`;
-      }).join('');
-    }
-
-    function mostrarTelaSucesso(pedido) {
-      const detalhes = document.getElementById('successDetails');
-      const camisetasLista = typeof pedido.camisetas_json === 'string' 
-        ? JSON.parse(pedido.camisetas_json || '[]') 
-        : pedido.camisetas_json;
-
-      detalhes.innerHTML = `
-        <div class="success-detail-row">
-          <span class="success-detail-label">Pedido ID</span>
-          <span class="success-detail-value">${pedido.pedidoId}</span>
-        </div>
-        <div class="success-detail-row">
-          <span class="success-detail-label">Nome</span>
-          <span class="success-detail-value">${pedido.nome}</span>
-        </div>
-        <div class="success-detail-row">
-          <span class="success-detail-label">Número</span>
-          <span class="success-detail-value">${pedido.numero}</span>
-        </div>
-        <div class="success-detail-row">
-          <span class="success-detail-label">Quantidade</span>
-          <span class="success-detail-value">${pedido.quantidade} camiseta(s)</span>
-        </div>
-        <div class="success-detail-row" style="flex-direction:column; align-items:flex-start;">
-          <span class="success-detail-label" style="margin-bottom:8px;">Camisetas</span>
-          ${formatarCamisetasTela(camisetasLista)}
-        </div>
-        <div class="success-detail-row">
-          <span class="success-detail-label">Forma de Pagamento</span>
-          <span class="success-detail-value">${pedido.forma_pagamento}</span>
-        </div>
-        <div class="success-detail-row">
-          <span class="success-detail-label">Valor Unitário</span>
-          <span class="success-detail-value">${pedido.valorUnitario}</span>
-        </div>
-        <div class="success-detail-row">
-          <span class="success-detail-label">Valor Total</span>
-          <span class="success-detail-value">${pedido.valorTotal}</span>
-        </div>
-      `;
-
-      document.getElementById('successOverlay').classList.add('active');
-    }
-
-    // ============================================
-    // TELA DE LOTE ENCERRADO
-    // ============================================
-    function mostrarTelaLoteEncerrado(pedido, dados) {
-      const detalhes = document.getElementById('loteDetails');
-      const jaPagou = dados.statusPagamento === 'Pago' || dados.statusPagamento === 'approved' || dados.statusPagamento === 'paid';
-
-      document.getElementById('lotePedidoId').textContent = pedido.pedidoId;
-
-      const msgEl = document.getElementById('loteMsg');
-      const valorOriginalFmt = dados.valorOriginal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-      const valorAtualFmt = dados.valorAtual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-      const diferencaFmt = dados.diferenca.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-      if (jaPagou) {
-        msgEl.innerHTML = `
-          Você já pagou <strong>${valorOriginalFmt}</strong> 
-          no 1º lote, mas o valor atual é <strong>${valorAtualFmt}</strong>.<br>
-          Para confirmar sua camiseta, pague a diferença de <strong style="color:var(--gold-light);">${diferencaFmt}</strong>.
-        `;
-        document.getElementById('btnPagarDiferenca').style.display = 'block';
-        document.getElementById('btnPagarDiferenca').textContent = 
-          `Pagar Diferença de ${diferencaFmt}`;
-      } else {
-        msgEl.innerHTML = `
-          Este pedido foi gerado no 1º lote (<strong>${valorOriginalFmt}</strong>).<br>
-          O lote encerrou e o link de pagamento expirou. O valor atual é 
-          <strong style="color:var(--gold-light);">${valorAtualFmt}</strong>.
-        `;
-        document.getElementById('btnPagarDiferenca').style.display = 'none';
-      }
-
-      detalhes.innerHTML = `
-        <div class="success-detail-row">
-          <span class="success-detail-label">Pedido ID</span>
-          <span class="success-detail-value">${pedido.pedidoId}</span>
-        </div>
-        <div class="success-detail-row">
-          <span class="success-detail-label">Data do Pedido</span>
-          <span class="success-detail-value">${new Date(dados.dataCriacao).toLocaleString('pt-BR')}</span>
-        </div>
-        <div class="success-detail-row">
-          <span class="success-detail-label">Valor do 1º Lote</span>
-          <span class="success-detail-value">${valorOriginalFmt}</span>
-        </div>
-        <div class="success-detail-row">
-          <span class="success-detail-label">Valor Atual (2º Lote)</span>
-          <span class="success-detail-value" style="color:var(--gold-light);">${valorAtualFmt}</span>
-        </div>
-        ${dados.diferenca > 0 ? `
-        <div class="success-detail-row">
-          <span class="success-detail-label">Diferença</span>
-          <span class="success-detail-value" style="color:#e74c3c;">${diferencaFmt}</span>
-        </div>` : ''}
-      `;
-
-      const msgWhats = jaPagou 
-        ? `Olá! Meu pedido ${pedido.pedidoId} foi do 1º lote. Já paguei ${valorOriginalFmt} e quero pagar a diferença de ${diferencaFmt}.`
-        : `Olá! Meu pedido ${pedido.pedidoId} era do 1º lote e o link expirou. Quero refazer no valor atual de ${valorAtualFmt}.`;
-
-      document.getElementById('linkWhatsLote').href = 
-        `https://wa.me/${CONFIG.numeroWhatsApp}?text=${encodeURIComponent(msgWhats)}`;
-
-      document.getElementById('loteOverlay').classList.add('active');
-    }
-
-    async function pagarDiferenca() {
-      const pedido = obterPedidoPendente();
-      if (!pedido) return;
-
-      const btn = document.getElementById('btnPagarDiferenca');
-      btn.disabled = true;
-      btn.textContent = "Gerando link...";
-
-      try {
-        const resposta = await fetch(CONFIG.googleScriptEndpoint, {
-          method: "POST",
-          body: JSON.stringify({
-            tipoRegistro: "PAGAR_DIFERENCA",
-            pedidoId: pedido.pedidoId,
-            redirect_url: CONFIG.redirectUrlCartao
-          })
-        });
-        const dados = await resposta.json();
-
-        if (dados.status === "success" && dados.checkout_url) {
-          window.location.href = dados.checkout_url;
-        } else {
-          alert("Erro ao gerar link da diferença. Fale no WhatsApp.");
-          btn.disabled = false;
-        }
-      } catch (err) {
-        alert("Erro de conexão. Fale no WhatsApp.");
-        btn.disabled = false;
-      }
-    }
-
-    function refazerPedidoLote() {
-      limparPedidoPendente();
-      document.getElementById('loteOverlay').classList.remove('active');
-      document.getElementById('regForm').reset();
-      document.getElementById('camisetasContainer').innerHTML = '';
-      document.getElementById('totalBox').style.display = 'none';
-      camisetas = [];
-      gerarPedidoId();
-      window.scrollTo({ top: document.getElementById('formSection').offsetTop - 100, behavior: 'smooth' });
-    }
-
-    // ============================================
-    // VERIFICAR RETORNO DO PAGAMENTO (ATUALIZADO)
-    // ============================================
-    async function verificarRetornoPagamento() {
+    function verificarRetornoCheckout() {
       const urlParams = new URLSearchParams(window.location.search);
       const pedidoIdUrl = urlParams.get('order_nsu') || urlParams.get('pedidoId');
-      const pedidoPendente = obterPedidoPendente();
 
-      if (!pedidoIdUrl && !pedidoPendente) return;
+      if (pedidoIdUrl) {
+        const banner = document.getElementById('bannerRetorno');
+        banner.classList.add('visible');
 
-      const pedido = pedidoPendente || { pedidoId: pedidoIdUrl };
+        // Limpa o pedido do localStorage para não poluir
+        limparPedidoPendente();
 
-      try {
-        const consultaUrl = CONFIG.googleScriptEndpoint + "?acao=consultar&pedidoId=" + encodeURIComponent(pedido.pedidoId);
-        const resposta = await fetch(consultaUrl);
-        const dados = await resposta.json();
-
-        // 🚨 LOTE ENCERRADO — mostra tela especial
-        if (dados.loteEncerrado) {
-          mostrarTelaLoteEncerrado(pedido, dados);
-          return;
+        // Remove os parâmetros da URL sem recarregar a página
+        if (window.history.replaceState) {
+          window.history.replaceState({}, document.title, window.location.pathname);
         }
 
-        // ✅ Fluxo normal (lote atual)
-        if (dados.encontrado && dados.statusPagamento) {
-          pedido.status = dados.statusPagamento;
-          pedido.dataConfirmacao = dados.dataConfirmacao;
-        }
-        mostrarTelaSucesso(pedido);
-
-      } catch (err) {
-        console.log("Não foi possível consultar status:", err);
-        mostrarTelaSucesso(pedido);
+        // Auto-fecha após 8 segundos
+        setTimeout(() => {
+          banner.classList.remove('visible');
+        }, 8000);
       }
     }
 
-    function newOrder() {
-      limparPedidoPendente();
-      document.getElementById('successOverlay').classList.remove('active');
-      document.getElementById('regForm').reset();
-      document.getElementById('camisetasContainer').innerHTML = '';
-      document.getElementById('totalBox').style.display = 'none';
-      camisetas = [];
-      gerarPedidoId();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    function fecharBanner() {
+      document.getElementById('bannerRetorno').classList.remove('visible');
     }
 
-    window.addEventListener('load', verificarRetornoPagamento);
+    window.addEventListener('load', verificarRetornoCheckout);
   </script>
 </body>
 </html>
