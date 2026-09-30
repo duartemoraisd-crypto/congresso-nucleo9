@@ -916,12 +916,12 @@
         <div class="lote-item">
           <div class="lote-numero">2º Lote</div>
           <div class="lote-preco">R$ 65,00<span>por unidade</span></div>
-          <span class="lote-badge atual">Lote Atual</span>
+          <span class="lote-badge encerrado">Encerrado</span>
         </div>
         <div class="lote-item">
           <div class="lote-numero">3º Lote</div>
           <div class="lote-preco">R$ 70,00<span>por unidade</span></div>
-          <span class="lote-badge futuro">Em breve</span>
+          <span class="lote-badge atual">Lote Atual</span>
         </div>
       </div>
     </div>
@@ -1024,17 +1024,17 @@
   <div class="success-overlay" id="loteOverlay">
     <div class="success-box">
       <div class="success-icon" style="filter:drop-shadow(0 4px 16px rgba(231,76,60,0.4));">⏰</div>
-      <h2 class="success-title" style="color:#e74c3c;">1º Lote Encerrado</h2>
+      <h2 class="success-title" style="color:#e74c3c;">Lote Encerrado</h2>
       <p class="success-msg" id="loteMsg">
-        O pedido <strong id="lotePedidoId">—</strong> foi feito no 1º lote (R$ 60,00).<br>
-        O valor atual é <strong>R$ 65,00</strong>.
+        O pedido <strong id="lotePedidoId">—</strong> foi feito em um lote anterior.<br>
+        Consulte os valores abaixo.
       </p>
       <div class="success-details" id="loteDetails">
         <!-- Preenchido via JavaScript -->
       </div>
       <div class="success-actions">
         <button class="success-btn primary" id="btnPagarDiferenca" onclick="pagarDiferenca()">
-          Pagar Diferença de R$ 5,00
+          Pagar Diferença
         </button>
         <button class="success-btn secondary" onclick="refazerPedidoLote()">
           Refazer Pedido no Valor Atual
@@ -1053,9 +1053,9 @@
     const CONFIG = {
       logoImage: "Núcleo-9.png",
       shirtModel: "CamisetaN9-v1.glb",
-      // PREÇO DO LOTE ATUAL (2º lote = R$ 65,00)
-      valorCamiseta: 65.00,
-      numeroWhatsApp: "5534997748740",
+      // PREÇO DO LOTE ATUAL (3º lote = R$ 70,00)
+      valorCamiseta: 70.00,
+      numeroWhatsApp: "553499414106",
       mensagemWhatsApp: "Olá! Acabei de realizar o pagamento da camiseta do Congresso Núcleo 9. Segue o comprovante:",
       googleScriptEndpoint: "https://script.google.com/macros/s/AKfycbxRP09jGSTsQbdDKMmVYWGibuUOcc_KbLRpVA5fZWacsapxddwVhI8bmTNK2iRQoIhQ/exec",
       redirectUrlCartao: "https://duartemoraisd-crypto.github.io/congresso-nucleo9/"
@@ -1554,8 +1554,8 @@
 
       if (jaPagou) {
         msgEl.innerHTML = `
-          Você já pagou <strong>${valorOriginalFmt}</strong> 
-          no 1º lote, mas o valor atual é <strong>${valorAtualFmt}</strong>.<br>
+          Você já pagou <strong>${valorOriginalFmt}</strong>
+          em um lote anterior, mas o valor atual é <strong>${valorAtualFmt}</strong>.<br>
           Para confirmar sua camiseta, pague a diferença de <strong style="color:var(--gold-light);">${diferencaFmt}</strong>.
         `;
         document.getElementById('btnPagarDiferenca').style.display = 'block';
@@ -1563,8 +1563,8 @@
           `Pagar Diferença de ${diferencaFmt}`;
       } else {
         msgEl.innerHTML = `
-          Este pedido foi gerado no 1º lote (<strong>${valorOriginalFmt}</strong>).<br>
-          O lote encerrou e o link de pagamento expirou. O valor atual é 
+          Este pedido foi gerado em um lote anterior (<strong>${valorOriginalFmt}</strong>).<br>
+          O lote encerrou e o link de pagamento expirou. O valor atual é
           <strong style="color:var(--gold-light);">${valorAtualFmt}</strong>.
         `;
         document.getElementById('btnPagarDiferenca').style.display = 'none';
@@ -1580,11 +1580,11 @@
           <span class="success-detail-value">${new Date(dados.dataCriacao).toLocaleString('pt-BR')}</span>
         </div>
         <div class="success-detail-row">
-          <span class="success-detail-label">Valor do 1º Lote</span>
+          <span class="success-detail-label">Valor do Lote Anterior</span>
           <span class="success-detail-value">${valorOriginalFmt}</span>
         </div>
         <div class="success-detail-row">
-          <span class="success-detail-label">Valor Atual (2º Lote)</span>
+          <span class="success-detail-label">Valor Atual (3º Lote)</span>
           <span class="success-detail-value" style="color:var(--gold-light);">${valorAtualFmt}</span>
         </div>
         ${dados.diferenca > 0 ? `
@@ -1594,9 +1594,9 @@
         </div>` : ''}
       `;
 
-      const msgWhats = jaPagou 
-        ? `Olá! Meu pedido ${pedido.pedidoId} foi do 1º lote. Já paguei ${valorOriginalFmt} e quero pagar a diferença de ${diferencaFmt}.`
-        : `Olá! Meu pedido ${pedido.pedidoId} era do 1º lote e o link expirou. Quero refazer no valor atual de ${valorAtualFmt}.`;
+      const msgWhats = jaPagou
+        ? `Olá! Meu pedido ${pedido.pedidoId} foi feito em um lote anterior. Já paguei ${valorOriginalFmt} e quero pagar a diferença de ${diferencaFmt}.`
+        : `Olá! Meu pedido ${pedido.pedidoId} era de um lote anterior e o link expirou. Quero refazer no valor atual de ${valorAtualFmt}.`;
 
       document.getElementById('linkWhatsLote').href = 
         `https://wa.me/${CONFIG.numeroWhatsApp}?text=${encodeURIComponent(msgWhats)}`;
